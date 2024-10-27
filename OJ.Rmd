@@ -107,9 +107,9 @@ rpart.plot(tree_model, type = 3, extra = 102, under = TRUE, fallen.leaves = TRUE
 
 ```
 
-The Decision Tree is built using the rpart function. A Decision Tree works by splitting the data at each node based on the feature that best separates the classes (Citrus Hill and Minute Maid) using criteria like Gini Impurity. The resulting tree is plotted to visualize how the features (e.g., prices, demographics) are used to make predictions at each step. Interpretation of the Tree - **Nodes**: Each internal node represents a decision rule based on a feature. 
-- **Branches**: Each branch represents the outcome of the decision (true or false). 
-- **Leaves**: The terminal nodes (leaves) display the predicted class for the samples that reach them.
+The Decision Tree is built using the rpart function. A Decision Tree works by splitting the data at each node based on the feature that best separates the classes (Citrus Hill and Minute Maid) using criteria like Gini Impurity. The resulting tree is plotted to visualize how the features (e.g., prices, demographics) are used to make predictions at each step. Interpretation of the Tree -   **Nodes**: Each internal node represents a decision rule based on a feature. 
+-   **Branches**: Each branch represents the outcome of the decision (true or false). 
+-   **Leaves**: The terminal nodes (leaves) display the predicted class for the samples that reach them.
 
 This decision tree classifies customers into two categories, "CH" and "MM," based primarily on the `LoyalCH` feature, which likely represents a customer loyalty score. At the root, if `LoyalCH` is 0.45 or higher, the tree branches left; otherwise, it goes right. For customers with a high `LoyalCH` (≥ 0.71), the next decision depends on `PriceDiff`. If `PriceDiff` is 0.15 or more, the classification is "CH"; if it’s lower, further splits occur based on `PctDiscMM` (percentage discount) and `WeekofPurchase`. If `LoyalCH` is between 0.45 and 0.71, additional splits occur using `PriceMM`, `LoyalCH`, and `SalePriceMM` until a final decision is reached.
 
@@ -126,3 +126,224 @@ confusionMatrix(test_pred, test_data$Purchase)
 initial_accuracy <- sum(test_pred == test_data$Purchase) / nrow(test_data)
 print(paste("Initial Accuracy:", round(initial_accuracy * 100, 2), "%"))
 ```
+
+Explanation:
+
+### 1. **Confusion Matrix Overview** 
+
+The confusion matrix presents a summary of the prediction results of a classification model. In this case, you have two classes: **CH** (presumably representing one category) and **MM** (representing another category). The matrix is structured as follows:
+
+|                  | Reference CH | Reference MM |
+|------------------|--------------|--------------|
+| **Predicted CH** | 169          | 33           |
+| **Predicted MM** | 26           | 92           |
+
+**Interpretation:** 
+- **True Positives (TP)**: 169 instances were correctly predicted as CH. 
+- **False Negatives (FN)**: 33 instances were incorrectly predicted as MM when they were actually CH. 
+- **False Positives (FP)**: 26 instances were incorrectly predicted as CH when they were actually MM. 
+- **True Negatives (TN)**: 92 instances were correctly predicted as MM.
+
+### 2. **Model Performance Metrics**
+
+**Accuracy**: The proportion of correct predictions (both true positives and true negatives) among the total predictions.
+
+- **Calculation**: 
+  $$
+  \text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN} = \frac{169 + 92}{169 + 33 + 26 + 92} = 0.8156 \text{ or } 81.56\%
+  $$ 
+- **Interpretation**: About 81.56% of the total predictions made by the model were correct.
+
+**95% Confidence Interval (CI)**: 
+- **Interpretation**: This interval (0.7687, 0.8566) indicates that we can be 95% confident that the true accuracy of the model lies within this range.
+
+**No Information Rate (NIR)**: The accuracy expected if predictions were made solely based on the most frequent class (in this case, CH). 
+- **Value**: 0.6094 indicates that if you simply predicted the most common class, you would be correct about 60.94% of the time.
+
+**P-Value [Acc > NIR]**: 
+- **Value**: 1.373e-15 indicates that the model's accuracy is significantly better than the no information rate, suggesting that the model is effective.
+
+### 3. **Kappa Statistic**
+Kappa measures the agreement between the predicted and actual classifications, correcting for chance.
+- **Value**: 0.6088, indicating a moderate level of agreement beyond chance. Values closer to 1 imply better agreement.
+
+### 4. **Mcnemar's Test P-Value**
+- **Value**: 0.4347 indicates no significant difference in the error rates of the two classes, suggesting that the model does not favor one class over the other.
+
+### 5. **Sensitivity (True Positive Rate)**
+The proportion of actual positives that are correctly identified.
+- **Calculation**: 
+  $$
+  \text{Sensitivity} = \frac{TP}{TP + FN} = \frac{169}{169 + 33} = 0.8667 \text{ or } 86.67\%
+  $$
+- **Interpretation**: The model correctly identifies 86.67% of actual CH instances.
+
+### 6. **Specificity (True Negative Rate)**
+The proportion of actual negatives that are correctly identified.
+- **Calculation**: 
+  $$
+  \text{Specificity} = \frac{TN}{TN + FP} = \frac{92}{92 + 26} = 0.7360 \text{ or } 73.60\%
+  $$
+- **Interpretation**: The model correctly identifies 73.60% of actual MM instances.
+
+### 7. **Positive Predictive Value (PPV)**
+The proportion of positive identifications that are actually correct.
+- **Calculation**: 
+  $$
+  \text{PPV} = \frac{TP}{TP + FP} = \frac{169}{169 + 26} = 0.8366 \text{ or } 83.66\%
+  $$
+- **Interpretation**: 83.66% of instances predicted as CH are indeed CH.
+
+### 8. **Negative Predictive Value (NPV)**
+The proportion of negative identifications that are actually correct.
+- **Calculation**: 
+  $$
+  \text{NPV} = \frac{TN}{TN + FN} = \frac{92}{92 + 33} = 0.7797 \text{ or } 77.97\%
+  $$
+- **Interpretation**: 77.97% of instances predicted as MM are indeed MM.
+
+### 9. **Prevalence**
+The proportion of actual positive cases in the dataset.
+- **Value**: 0.6094 indicates that approximately 60.94% of the instances are actually CH.
+
+### 10. **Detection Rate**
+The proportion of actual positives that are detected by the model.
+- **Calculation**: 
+  $$
+  \text{Detection Rate} = \frac{TP}{\text{Total instances}} = \frac{169}{\text{Total}} \approx 0.5281 \text{ or } 52.81\%
+  $$
+- **Interpretation**: The model successfully detected about 52.81% of actual cases of CH.
+
+### 11. **Detection Prevalence** 
+The proportion of instances predicted as positive.
+- **Calculation**: 
+  $$
+  \text{Detection Prevalence} = \frac{TP + FP}{\text{Total instances}} = \frac{169 + 26}{\text{Total}} \approx 0.6312 \text{ or } 63.12\%
+  $$
+- **Interpretation**: About 63.12% of the instances are predicted as CH by the model.
+
+### 12. **Balanced Accuracy**
+The average of sensitivity and specificity.
+- **Calculation**: 
+  $$
+  \text{Balanced Accuracy} = \frac{\text{Sensitivity} + \text{Specificity}}{2} = \frac{0.8667 + 0.7360}{2} = 0.8013 \text{ or } 80.13\%
+  $$
+- **Interpretation**: This metric accounts for imbalanced datasets, providing a more nuanced view of model performance.
+
+### 13. **Positive Class**
+- **Value**: CH is identified as the positive class, meaning the model's performance metrics primarily focus on predicting this class.
+
+### Summary
+In summary, the model shows good overall accuracy (**81.56%**) and a strong ability to correctly identify positive cases (CH) with a sensitivity of **86.67%**. The Kappa statistic and confidence intervals suggest that the model's performance is statistically significant and that it performs better than random guessing. The balance between sensitivity and specificity is relatively good, making this model a reliable choice for the task at hand.
+
+## Feature Importance
+```{r}
+var_imp <- as.data.frame(varImp(tree_model, scale = FALSE))
+var_imp$Variable <- rownames(var_imp)
+ggplot(var_imp, aes(x = reorder(Variable, Overall), y = Overall)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  coord_flip() +
+  xlab("Features") + ylab("Importance") +
+  ggtitle("Feature Importance in Initial Decision Tree")
+```
+
+This feature importance plot shows which variables contributed the most to the Decision Tree splits. Variables with higher importance values played a more significant role in determining whether a customer purchased Citrus Hill or Minute Maid. This bar chart displays the feature importance rankings from an initial decision tree model. "LoyalCH" has the highest importance, suggesting that customer loyalty has the strongest impact on the model's predictions. Other key features, such as "PriceDiff" and "ListPriceDiff," also have significant influence, while features like "STORE" and "SpecialMM" have minimal impact, indicating they contribute less to the model's predictive power.
+
+## Improving the Model: Hyperparameter Tuning
+```{r}
+# Tune the model with cross-validation
+set.seed(123)
+tree_tuned <- train(Purchase ~ ., data = train_data, method = "rpart",
+                    trControl = trainControl(method = "cv", number = 10),
+                    tuneLength = 10)
+
+# Plot the tuning results
+plot(tree_tuned)
+```
+
+We perform hyperparameter tuning using 10-fold cross-validation to find the optimal complexity parameter (cp), which controls the depth and size of the tree. Tuning prevents overfitting by balancing model complexity and performance. This plot shows the relationship between the complexity parameter and cross-validated accuracy for a model. As the complexity parameter increases from 0 to around 0.4, accuracy remains relatively stable, suggesting that adding complexity does not significantly improve model performance. However, after 0.4, accuracy sharply declines, indicating overfitting and that further complexity negatively impacts the model’s predictive power.
+
+## Final Decision Tree and Evaluation
+```{r}
+# Build the final tuned Decision Tree
+final_tree_model <- rpart(Purchase ~ ., data = train_data, method = "class", 
+                          control = rpart.control(cp = tree_tuned$bestTune$cp))
+
+# Plot the final tree
+rpart.plot(final_tree_model, type = 3, extra = 102, under = TRUE, fallen.leaves = TRUE,
+           main = "Improved Decision Tree")
+```
+
+This improved decision tree classifies customers into two categories, "CH" and "MM," based on several factors, with `LoyalCH` (a loyalty score) as the primary decision criterion. At the top level, if `LoyalCH` is 0.45 or higher, the tree follows the left branch; if it’s lower, it goes right. For customers with `LoyalCH` above 0.71, further splits occur based on `PriceDiff` (price difference), `StoreID`, and `WeekofPurchase` to classify them as either "CH" or "MM." If `LoyalCH` is between 0.45 and 0.71, additional checks on `PriceMM`, `PctDiscMM`, and `WeekofPurchase` refine the classification. On the right side of the tree, for those with `LoyalCH` below 0.45, decisions rely on lower `LoyalCH` thresholds and other conditions like `SalePriceMM` and `SpecialCH`, leading to final classifications. The tree's added decision points on factors such as `StoreID` and `WeekofPurchase` enhance its accuracy by capturing store-specific and timing-based patterns, making it more nuanced and effective in distinguishing between customer types.
+
+```{r}
+# Evaluate the final model
+final_test_pred <- predict(final_tree_model, newdata = test_data, type = "class")
+confusionMatrix(final_test_pred, test_data$Purchase)
+
+# Final accuracy
+final_accuracy <- sum(final_test_pred == test_data$Purchase) / nrow(test_data)
+print(paste("Final Accuracy:", round(final_accuracy * 100, 2), "%"))
+```
+
+We rebuild the Decision Tree using the optimal cp value found through tuning. The new tree is expected to generalize better and prevent overfitting. The final accuracy is 80.94%, which is slightly lower than the initial accuracy, but the model is now more robust and less likely to overfit.
+
+### Confusion Matrix and Performance Metrics
+
+#### 1. **Confusion Matrix Overview**
+
+- **Structure**:
+
+  |            | Reference CH | Reference MM |
+  |------------|--------------|--------------|
+  | **Predicted CH** | 165          | 31           |
+  | **Predicted MM** | 30           | 94           |
+
+- **Interpretation**:
+  - **True Positives (TP)**: 165 correctly predicted as CH.
+  - **False Negatives (FN)**: 31 incorrectly predicted as MM (actual CH).
+  - **False Positives (FP)**: 30 incorrectly predicted as CH (actual MM).
+  - **True Negatives (TN)**: 94 correctly predicted as MM.
+
+#### 2. **Model Performance Metrics**
+- **Accuracy**: 80.94% (correct predictions among total).
+- **95% Confidence Interval (CI)**: (0.762, 0.8509) - true accuracy likely within this range.
+- **No Information Rate (NIR)**: 60.94% - accuracy if only predicting the most frequent class.
+- **P-Value [Acc > NIR]**: 1.07e-14 - model significantly outperforms random guessing.
+
+#### 3. **Kappa Statistic**
+- **Value**: 0.599 - indicates moderate agreement beyond chance.
+
+#### 4. **Mcnemar's Test P-Value**
+- **Value**: 1 - no significant difference in error rates for classes.
+
+#### 5. **Sensitivity (True Positive Rate)**
+- **Value**: 84.62% - accurately identifies actual CH instances.
+
+#### 6. **Specificity (True Negative Rate)**
+- **Value**: 75.20% - accurately identifies actual MM instances.
+
+#### 7. **Positive Predictive Value (PPV)**
+- **Value**: 84.18% - proportion of predicted CH that are actually CH.
+
+#### 8. **Negative Predictive Value (NPV)**
+- **Value**: 75.81% - proportion of predicted MM that are actually MM.
+
+#### 9. **Prevalence**
+- **Value**: 60.94% - indicates the proportion of actual CH cases.
+
+#### 10. **Detection Rate**
+- **Value**: 51.56% - proportion of actual positives detected by the model.
+
+#### 11. **Detection Prevalence**
+- **Value**: 61.25% - proportion of instances predicted as CH.
+
+#### 12. **Balanced Accuracy**
+- **Value**: 79.91% - average of sensitivity and specificity.
+
+#### 13. **Positive Class**
+- **Class Identified**: CH is considered the positive class for performance metrics.
+
+### Summary
+In summary, this model shows an overall accuracy of **80.94%**, with a strong sensitivity of **84.62%**, indicating that it effectively identifies positive cases (CH). The model also performs well in terms of specificity (**75.20%**) and Kappa statistic (**0.599**), which suggests a moderate level of agreement beyond chance. The confidence interval and P-values indicate that the model's performance is statistically significant and that it performs better than random guessing. Overall, Model 2 demonstrates reliable predictive capability for the task at hand.
+This Model demonstrates reliable predictive capability for identifying the positive class (CH).
