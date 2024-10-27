@@ -7,12 +7,7 @@ output: html_document
 
 # Introduction
 
-In this analysis, we aim to predict whether a customer will purchase **Citrus Hill** or **Minute
-Maid** orange juice using the **OJ** dataset from the `ISLR2` library. We will develop a **Decision
-Tree** model and explore its accuracy in predicting customer purchases. We will also visualize the
-decision-making process, inspect feature importance, and improve the model through hyperparameter
-tuning. The goal is to provide a comprehensive, step-by-step explanation using R code and
-visualizations.
+In this analysis, we aim to predict whether a customer will purchase **Citrus Hill** or **Minute Maid** orange juice using the **OJ** dataset from the `ISLR2` library. We will develop a **Decision Tree** model and explore its accuracy in predicting customer purchases. We will also visualize the decision-making process, inspect feature importance, and improve the model through hyperparameter tuning. The goal is to provide a comprehensive, step-by-step explanation using R code and visualizations.
 
 ## Data Loading and Preprocessing
 
@@ -35,18 +30,13 @@ sum(is.na(OJ))
 OJ$Purchase <- as.factor(OJ$Purchase)
 ```
 
-In this section, we load the necessary libraries such as ISLR2 (for the dataset), caret (for data
-partitioning and model tuning), rpart (for decision tree modeling), and ggplot2 for data
-visualization.
+In this section, we load the necessary libraries such as ISLR2 (for the dataset), caret (for data partitioning and model tuning), rpart (for decision tree modeling), and ggplot2 for data visualization.
 
-We check for any missing values in the dataset and convert the response variable Purchase into a
-factor, which is essential for classification tasks.
+We check for any missing values in the dataset and convert the response variable Purchase into a factor, which is essential for classification tasks.
 
 ## Data Splitting
 
-To evaluate the model, we split the dataset into training and testing sets. This ensures that the
-model is trained on one subset of the data and then tested on unseen data for an unbiased
-evaluation.
+To evaluate the model, we split the dataset into training and testing sets. This ensures that the model is trained on one subset of the data and then tested on unseen data for an unbiased evaluation.
 
 ```{r}
 # Split the data into training (70%) and testing (30%) sets
@@ -67,10 +57,72 @@ ggplot(OJ, aes(x = Purchase)) +
   xlab("Purchase") + ylab("Count")
 ```
 
-This bar plot shows the distribution of purchases between Citrus Hill and Minute Maid. It helps us
-understand the balance of the response variable, which is important when building classification
-models. The bar chart displays the distribution of purchases between Citrus Hill (CH) and Minute
-Maid (MM) orange juice. The taller bar for Citrus Hill indicates that it is purchased more
-frequently than Minute Maid in the dataset, with over 600 purchases for CH compared to around 400
-for MM. This imbalance suggests that Citrus Hill is the more popular choice overall.
+This bar plot shows the distribution of purchases between Citrus Hill and Minute Maid. It helps us understand the balance of the response variable, which is important when building classification models. The bar chart displays the distribution of purchases between Citrus Hill (CH) and Minute Maid (MM) orange juice. The taller bar for Citrus Hill indicates that it is purchased more frequently than Minute Maid in the dataset, with over 600 purchases for CH compared to around 400 for MM. This imbalance suggests that Citrus Hill is the more popular choice overall.
 
+### Scatter Plot: Price of Citrus Hill vs. Minute Maid
+
+```{r}
+ggplot(OJ, aes(x = PriceCH, y = PriceMM, color = Purchase)) +
+  geom_point(alpha = 0.6) +
+  ggtitle("Price of Citrus Hill vs. Price of Minute Maid by Purchase") +
+  xlab("Price of Citrus Hill") + ylab("Price of Minute Maid")
+```
+
+In this scatter plot, we compare the prices of Citrus Hill and Minute Maid with respect to the purchases. Points are colored by Purchase, allowing us to see the relationship between the prices and the purchase decision. The scatter plot visualizes the relationship between the prices of Citrus Hill (x-axis) and Minute Maid (y-axis) for different purchase decisions. Points are color-coded by the product purchased (CH or MM). There is some overlap between the two products, but it is evident that lower prices for one product might influence the decision to purchase the other.
+
+### Density Plots: Price of Citrus Hill vs. Price of Minute Maid by Purchase
+
+```{r}
+ggplot(OJ, aes(x = PriceCH, fill = Purchase)) +
+  geom_density(alpha = 0.4) +
+  ggtitle("Distribution of Price for Citrus Hill by Purchase") +
+  xlab("Price of Citrus Hill")
+```
+
+The density plot shows the distribution of prices for Citrus Hill (CH), separated by the product purchased (either Citrus Hill (CH) or Minute Maid (MM)), using different colors. The x-axis represents the price of Citrus Hill, while the y-axis indicates the density, or the relative frequency of different prices in the dataset.
+
+-   The red area represents customers who purchased Citrus Hill at various price points, and the teal area represents those who purchased Minute Maid.
+-   The peak for Citrus Hill purchases (red) occurs around a price of 1.9, indicating that customers tend to buy Citrus Hill more frequently at this price range.
+-   Minute Maid purchases (teal) are more spread out, with some preference for lower prices of Citrus Hill (1.7 to 1.8) and higher prices (around 2.0), possibly indicating that when Citrus Hill is priced low or high, more customers opt for Minute Maid. This visualization helps to understand how the pricing of Citrus Hill influences whether customers purchase it or opt for its competitor.
+
+### Density Plots: Price for minute maid by purchase
+
+```{r}
+ggplot(OJ, aes(x = PriceMM, fill = Purchase)) +
+  geom_density(alpha = 0.4) +
+  ggtitle("Distribution of Price for Minute Maid by Purchase") +
+  xlab("Price of Minute Maid")
+```
+
+This density plot shows the price distribution of Minute Maid purchases by two groups: CH (red) and MM (blue). Both groups frequently buy around the 2.0–2.2 price range, with CH purchases being more concentrated around specific price points (2.0 and 2.1). MM purchases have a wider spread, including some lower prices (around 1.7), indicating more variability in purchase prices compared to CH. The overlap suggests shared popular price points, but MM appears more price-flexible.
+
+## Building the Initial Decision Tree Model
+
+```{r}
+# Build the Decision Tree model
+tree_model <- rpart(Purchase ~ ., data = train_data, method = "class")
+
+# Plot the Decision Tree
+rpart.plot(tree_model, type = 3, extra = 102, under = TRUE, fallen.leaves = TRUE)
+
+```
+
+The Decision Tree is built using the rpart function. A Decision Tree works by splitting the data at each node based on the feature that best separates the classes (Citrus Hill and Minute Maid) using criteria like Gini Impurity. The resulting tree is plotted to visualize how the features (e.g., prices, demographics) are used to make predictions at each step. Interpretation of the Tree - **Nodes**: Each internal node represents a decision rule based on a feature. 
+- **Branches**: Each branch represents the outcome of the decision (true or false). 
+- **Leaves**: The terminal nodes (leaves) display the predicted class for the samples that reach them.
+
+This decision tree classifies customers into two categories, "CH" and "MM," based primarily on the `LoyalCH` feature, which likely represents a customer loyalty score. At the root, if `LoyalCH` is 0.45 or higher, the tree branches left; otherwise, it goes right. For customers with a high `LoyalCH` (≥ 0.71), the next decision depends on `PriceDiff`. If `PriceDiff` is 0.15 or more, the classification is "CH"; if it’s lower, further splits occur based on `PctDiscMM` (percentage discount) and `WeekofPurchase`. If `LoyalCH` is between 0.45 and 0.71, additional splits occur using `PriceMM`, `LoyalCH`, and `SalePriceMM` until a final decision is reached.
+
+For customers with `LoyalCH` below 0.45, the tree uses `LoyalCH` thresholds at 0.28 and conditions based on `SalePriceMM` and `SpecialCH` to make classifications. Each endpoint represents a final classification into "CH" or "MM," showing the number and percentage of instances in that category. This structure indicates that `LoyalCH` is a crucial determinant in the model, influencing classification outcomes across both high and low loyalty levels.
+
+## Evaluating the Model
+
+```{r}
+# Evaluate the model on the test data
+test_pred <- predict(tree_model, newdata = test_data, type = "class")
+confusionMatrix(test_pred, test_data$Purchase)
+
+# Initial accuracy
+initial_accuracy <- sum(test_pred == test_data$Purchase) / nrow(test_data)
+print(paste("Initial Accuracy:", round(initial_accuracy * 100, 2), "%"))
+```
