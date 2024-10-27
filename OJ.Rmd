@@ -1,0 +1,76 @@
+---
+title: "OJ-Purchase-Prediction"
+author: "Nikhil Prema Chandra Rao"
+date: "2024-10-27"
+output: html_document
+---
+
+# Introduction
+
+In this analysis, we aim to predict whether a customer will purchase **Citrus Hill** or **Minute
+Maid** orange juice using the **OJ** dataset from the `ISLR2` library. We will develop a **Decision
+Tree** model and explore its accuracy in predicting customer purchases. We will also visualize the
+decision-making process, inspect feature importance, and improve the model through hyperparameter
+tuning. The goal is to provide a comprehensive, step-by-step explanation using R code and
+visualizations.
+
+## Data Loading and Preprocessing
+
+```{r}
+# Load necessary libraries
+library(ISLR2)
+library(caret)
+library(rpart)
+library(rpart.plot)
+library(ggplot2)
+library(dplyr)
+
+# Load the OJ dataset
+data(OJ)
+
+# Check for missing values
+sum(is.na(OJ))
+
+# Convert Purchase to a factor
+OJ$Purchase <- as.factor(OJ$Purchase)
+```
+
+In this section, we load the necessary libraries such as ISLR2 (for the dataset), caret (for data
+partitioning and model tuning), rpart (for decision tree modeling), and ggplot2 for data
+visualization.
+
+We check for any missing values in the dataset and convert the response variable Purchase into a
+factor, which is essential for classification tasks.
+
+## Data Splitting
+
+To evaluate the model, we split the dataset into training and testing sets. This ensures that the
+model is trained on one subset of the data and then tested on unseen data for an unbiased
+evaluation.
+
+```{r}
+# Split the data into training (70%) and testing (30%) sets
+set.seed(123)
+train_index <- createDataPartition(OJ$Purchase, p = 0.7, list = FALSE)
+train_data <- OJ[train_index, ]
+test_data <- OJ[-train_index, ]
+```
+
+## Exploratory Data Analysis (EDA)
+
+### Distribution of Purchases
+
+```{r}
+ggplot(OJ, aes(x = Purchase)) +
+  geom_bar(fill = "lightblue") +
+  ggtitle("Distribution of Purchase (Citrus Hill vs. Minute Maid)") +
+  xlab("Purchase") + ylab("Count")
+```
+
+This bar plot shows the distribution of purchases between Citrus Hill and Minute Maid. It helps us
+understand the balance of the response variable, which is important when building classification
+models. The bar chart displays the distribution of purchases between Citrus Hill (CH) and Minute
+Maid (MM) orange juice. The taller bar for Citrus Hill indicates that it is purchased more
+frequently than Minute Maid in the dataset, with over 600 purchases for CH compared to around 400
+for MM. This imbalance suggests that Citrus Hill is the more popular choice overall.
+
