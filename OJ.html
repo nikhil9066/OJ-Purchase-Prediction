@@ -1000,6 +1000,80 @@ reliable predictive capability for identifying the positive class
 </div>
 </div>
 </div>
+<div id="comparative-analysis-of-model-performance" class="section level1">
+<h1>Comparative Analysis of Model Performance</h1>
+<div id="model-1-metrics-before-cross-validation" class="section level2">
+<h2>Model 1 Metrics (Before Cross-validation)</h2>
+<ul>
+<li><strong>Accuracy</strong>: 81.56%</li>
+<li><strong>Sensitivity (True Positive Rate)</strong>: 86.67%</li>
+<li><strong>Specificity (True Negative Rate)</strong>: 73.60%</li>
+<li><strong>Positive Predictive Value (PPV)</strong>: 83.66%</li>
+<li><strong>Negative Predictive Value (NPV)</strong>: 77.97%</li>
+<li><strong>Kappa Statistic</strong>: 0.6088</li>
+<li><strong>Balanced Accuracy</strong>: 80.13%</li>
+<li><strong>95% Confidence Interval (CI)</strong>: (0.7687, 0.8566)</li>
+</ul>
+</div>
+<div id="model-2-metrics-after-cross-validation" class="section level2">
+<h2>Model 2 Metrics (After Cross-validation)</h2>
+<ul>
+<li><strong>Accuracy</strong>: 80.94%</li>
+<li><strong>Sensitivity (True Positive Rate)</strong>: 84.62%</li>
+<li><strong>Specificity (True Negative Rate)</strong>: 75.20%</li>
+<li><strong>Positive Predictive Value (PPV)</strong>: 84.18%</li>
+<li><strong>Negative Predictive Value (NPV)</strong>: 75.81%</li>
+<li><strong>Kappa Statistic</strong>: 0.599</li>
+<li><strong>Balanced Accuracy</strong>: 79.91%</li>
+<li><strong>95% Confidence Interval (CI)</strong>: (0.762, 0.8509)</li>
+</ul>
+</div>
+<div id="key-comparisons" class="section level2">
+<h2>Key Comparisons</h2>
+<ol style="list-style-type: decimal">
+<li><strong>Accuracy</strong>: Model 1 has a slightly higher accuracy
+(81.56%) compared to Model 2 (80.94%).</li>
+<li><strong>Sensitivity</strong>: Model 1 also outperforms Model 2 in
+sensitivity (86.67% vs. 84.62%), indicating it is better at identifying
+actual positive cases (CH).</li>
+<li><strong>Specificity</strong>: Model 2 has a higher specificity
+(75.20% vs. 73.60%), meaning it is slightly better at identifying actual
+negative cases (MM).</li>
+<li><strong>Positive Predictive Value (PPV)</strong>: Model 2 performs
+better in terms of PPV (84.18% vs. 83.66%), suggesting it is more
+reliable when predicting CH instances.</li>
+<li><strong>Negative Predictive Value (NPV)</strong>: Model 1 has a
+better NPV (77.97% vs. 75.81%), indicating it is more effective at
+predicting negative instances.</li>
+<li><strong>Kappa Statistic</strong>: Model 1 shows a marginally better
+Kappa statistic (0.6088 vs. 0.599), indicating slightly stronger
+agreement beyond chance.</li>
+<li><strong>Balanced Accuracy</strong>: Model 1 has a better balanced
+accuracy (80.13% vs. 79.91%), highlighting a more favorable performance
+considering both classes.</li>
+<li><strong>Confidence Intervals</strong>: Both models show overlapping
+confidence intervals, but Model 1’s is slightly higher, reinforcing its
+reliability.</li>
+</ol>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<p>Both models demonstrate effective performance in predicting the
+classification of instances as CH or MM. Model 1 exhibits superior
+overall accuracy, sensitivity, and negative predictive value, making it
+particularly strong in correctly identifying actual positive cases and
+minimizing false negatives. Conversely, Model 2 shows a higher
+specificity and positive predictive value, suggesting it is more
+reliable for confirming negative cases.</p>
+<p>In terms of general applicability, <strong>Model 1 is recommended for
+scenarios where accurately identifying positive cases is
+critical</strong>, while <strong>Model 2 may be preferable in contexts
+where correctly predicting negative instances is more
+important</strong>. Ultimately, the choice between models should
+consider the specific requirements of the application, particularly the
+costs associated with false positives and false negatives.</p>
+</div>
+</div>
 
 
 
