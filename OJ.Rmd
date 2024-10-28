@@ -135,7 +135,12 @@ The confusion matrix presents a summary of the prediction results of a classific
 | **Predicted CH** | 169          | 33           |
 | **Predicted MM** | 26           | 92           |
 
-**Interpretation:** - **True Positives (TP)**: 169 instances were correctly predicted as CH. - **False Negatives (FN)**: 33 instances were incorrectly predicted as MM when they were actually CH. - **False Positives (FP)**: 26 instances were incorrectly predicted as CH when they were actually MM. - **True Negatives (TN)**: 92 instances were correctly predicted as MM.
+**Interpretation:**
+
+-   **True Positives (TP)**: 169 instances were correctly predicted as CH.
+-   **False Negatives (FN)**: 33 instances were incorrectly predicted as MM when they were actually CH.
+-   **False Positives (FP)**: 26 instances were incorrectly predicted as CH when they were actually MM.
+-   **True Negatives (TN)**: 92 instances were correctly predicted as MM.
 
 ### 2. **Model Performance Metrics**
 
@@ -146,9 +151,13 @@ The confusion matrix presents a summary of the prediction results of a classific
     $$
 -   **Interpretation**: About 81.56% of the total predictions made by the model were correct.
 
-**95% Confidence Interval (CI)**: - **Interpretation**: This interval (0.7687, 0.8566) indicates that we can be 95% confident that the true accuracy of the model lies within this range.
+**95% Confidence Interval (CI)**:
 
-**No Information Rate (NIR)**: The accuracy expected if predictions were made solely based on the most frequent class (in this case, CH). - **Value**: 0.6094 indicates that if you simply predicted the most common class, you would be correct about 60.94% of the time.
+-   **Interpretation**: This interval (0.7687, 0.8566) indicates that we can be 95% confident that the true accuracy of the model lies within this range.
+
+**No Information Rate (NIR)**: The accuracy expected if predictions were made solely based on the most frequent class (in this case, CH).
+
+-   **Value**: 0.6094 indicates that if you simply predicted the most common class, you would be correct about 60.94% of the time.
 
 **P-Value [Acc \> NIR]**: - **Value**: 1.373e-15 indicates that the model's accuracy is significantly better than the no information rate, suggesting that the model is effective.
 
@@ -156,55 +165,71 @@ The confusion matrix presents a summary of the prediction results of a classific
 
 Kappa measures the agreement between the predicted and actual classifications, correcting for chance. - **Value**: 0.6088, indicating a moderate level of agreement beyond chance. Values closer to 1 imply better agreement.
 
-### 4. **Mcnemar's Test P-Value**
+### 4. **McNemar's Test P-Value**
 
 -   **Value**: 0.4347 indicates no significant difference in the error rates of the two classes, suggesting that the model does not favor one class over the other.
 
 ### 5. **Sensitivity (True Positive Rate)**
 
-The proportion of actual positives that are correctly identified. - **Calculation**: $$
-  \text{Sensitivity} = \frac{TP}{TP + FN} = \frac{169}{169 + 33} = 0.8667 \text{ or } 86.67\%
-  $$ - **Interpretation**: The model correctly identifies 86.67% of actual CH instances.
+The proportion of actual positives that are correctly identified.
+
+-   **Calculation**: $$
+      \text{Sensitivity} = \frac{TP}{TP + FN} = \frac{169}{169 + 33} = 0.8667 \text{ or } 86.67\%
+      $$ - **Interpretation**: The model correctly identifies 86.67% of actual CH instances.
 
 ### 6. **Specificity (True Negative Rate)**
 
-The proportion of actual negatives that are correctly identified. - **Calculation**: $$
-  \text{Specificity} = \frac{TN}{TN + FP} = \frac{92}{92 + 26} = 0.7360 \text{ or } 73.60\%
-  $$ - **Interpretation**: The model correctly identifies 73.60% of actual MM instances.
+The proportion of actual negatives that are correctly identified.
+
+-   **Calculation**: $$
+      \text{Specificity} = \frac{TN}{TN + FP} = \frac{92}{92 + 26} = 0.7360 \text{ or } 73.60\%
+      $$ - **Interpretation**: The model correctly identifies 73.60% of actual MM instances.
 
 ### 7. **Positive Predictive Value (PPV)**
 
-The proportion of positive identifications that are actually correct. - **Calculation**: $$
-  \text{PPV} = \frac{TP}{TP + FP} = \frac{169}{169 + 26} = 0.8366 \text{ or } 83.66\%
-  $$ - **Interpretation**: 83.66% of instances predicted as CH are indeed CH.
+The proportion of positive identifications that are actually correct.
+
+-   **Calculation**: $$
+      \text{PPV} = \frac{TP}{TP + FP} = \frac{169}{169 + 26} = 0.8366 \text{ or } 83.66\%
+      $$ - **Interpretation**: 83.66% of instances predicted as CH are indeed CH.
 
 ### 8. **Negative Predictive Value (NPV)**
 
-The proportion of negative identifications that are actually correct. - **Calculation**: $$
-  \text{NPV} = \frac{TN}{TN + FN} = \frac{92}{92 + 33} = 0.7797 \text{ or } 77.97\%
-  $$ - **Interpretation**: 77.97% of instances predicted as MM are indeed MM.
+The proportion of negative identifications that are actually correct.
+
+-   **Calculation**: $$
+      \text{NPV} = \frac{TN}{TN + FN} = \frac{92}{92 + 33} = 0.7797 \text{ or } 77.97\%
+      $$ - **Interpretation**: 77.97% of instances predicted as MM are indeed MM.
 
 ### 9. **Prevalence**
 
-The proportion of actual positive cases in the dataset. - **Value**: 0.6094 indicates that approximately 60.94% of the instances are actually CH.
+The proportion of actual positive cases in the data set.
+
+-   **Value**: 0.6094 indicates that approximately 60.94% of the instances are actually CH.
 
 ### 10. **Detection Rate**
 
-The proportion of actual positives that are detected by the model. - **Calculation**: $$
-  \text{Detection Rate} = \frac{TP}{\text{Total instances}} = \frac{169}{\text{Total}} \approx 0.5281 \text{ or } 52.81\%
-  $$ - **Interpretation**: The model successfully detected about 52.81% of actual cases of CH.
+The proportion of actual positives that are detected by the model.
+
+-   **Calculation**: $$
+      \text{Detection Rate} = \frac{TP}{\text{Total instances}} = \frac{169}{\text{Total}} \approx 0.5281 \text{ or } 52.81\%
+      $$ - **Interpretation**: The model successfully detected about 52.81% of actual cases of CH.
 
 ### 11. **Detection Prevalence**
 
-The proportion of instances predicted as positive. - **Calculation**: $$
-  \text{Detection Prevalence} = \frac{TP + FP}{\text{Total instances}} = \frac{169 + 26}{\text{Total}} \approx 0.6312 \text{ or } 63.12\%
-  $$ - **Interpretation**: About 63.12% of the instances are predicted as CH by the model.
+The proportion of instances predicted as positive.
+
+-   **Calculation**: $$
+      \text{Detection Prevalence} = \frac{TP + FP}{\text{Total instances}} = \frac{169 + 26}{\text{Total}} \approx 0.6312 \text{ or } 63.12\%
+      $$ - **Interpretation**: About 63.12% of the instances are predicted as CH by the model.
 
 ### 12. **Balanced Accuracy**
 
-The average of sensitivity and specificity. - **Calculation**: $$
-  \text{Balanced Accuracy} = \frac{\text{Sensitivity} + \text{Specificity}}{2} = \frac{0.8667 + 0.7360}{2} = 0.8013 \text{ or } 80.13\%
-  $$ - **Interpretation**: This metric accounts for imbalanced datasets, providing a more nuanced view of model performance.
+The average of sensitivity and specificity.
+
+-   **Calculation**: $$
+      \text{Balanced Accuracy} = \frac{\text{Sensitivity} + \text{Specificity}}{2} = \frac{0.8667 + 0.7360}{2} = 0.8013 \text{ or } 80.13\%
+      $$ - **Interpretation**: This metric accounts for imbalanced data sets, providing a more nuanced view of model performance.
 
 ### 13. **Positive Class**
 
@@ -261,7 +286,7 @@ final_accuracy <- sum(final_test_pred == test_data$Purchase) / nrow(test_data)
 print(paste("Final Accuracy:", round(final_accuracy * 100, 2), "%"))
 ```
 
-We rebuild the Decision Tree using the optimal cp value found through tuning. The new tree is expected to generalize better and prevent overfitting. The final accuracy is 80.94%, which is slightly lower than the initial accuracy, but the model is now more robust and less likely to overfit.
+We rebuild the Decision Tree using the optimal cp value found through tuning. The new tree is expected to generalize better and prevent over fitting. The final accuracy is 80.94%, which is slightly lower than the initial accuracy, but the model is now more robust and less likely to over fit.
 
 ### Confusion Matrix and Performance Metrics
 
