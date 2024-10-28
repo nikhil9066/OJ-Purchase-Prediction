@@ -12,6 +12,8 @@ data(OJ)
 # Check for missing values (none in this dataset)
 sum(is.na(OJ))
 
+str(OJ)
+
 # Convert Purchase to a factor (if not already)
 OJ$Purchase <- as.factor(OJ$Purchase)
 

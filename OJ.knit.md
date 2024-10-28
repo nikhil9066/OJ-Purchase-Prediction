@@ -13,20 +13,81 @@ In this analysis, we aim to predict whether a customer will purchase **Citrus Hi
 
 ## Data Loading and Preprocessing
 
-```{r}
+
+```r
 library(ISLR2)
 library(caret)
+```
+
+```
+## Loading required package: ggplot2
+```
+
+```
+## Loading required package: lattice
+```
+
+```r
 library(rpart)
 library(rpart.plot)
 library(ggplot2)
 library(dplyr)
+```
 
+```
+## 
+## Attaching package: 'dplyr'
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
 data(OJ)
 
 sum(is.na(OJ))
+```
 
+```
+## [1] 0
+```
+
+```r
 str(OJ)
+```
 
+```
+## 'data.frame':	1070 obs. of  18 variables:
+##  $ Purchase      : Factor w/ 2 levels "CH","MM": 1 1 1 2 1 1 1 1 1 1 ...
+##  $ WeekofPurchase: num  237 239 245 227 228 230 232 234 235 238 ...
+##  $ StoreID       : num  1 1 1 1 7 7 7 7 7 7 ...
+##  $ PriceCH       : num  1.75 1.75 1.86 1.69 1.69 1.69 1.69 1.75 1.75 1.75 ...
+##  $ PriceMM       : num  1.99 1.99 2.09 1.69 1.69 1.99 1.99 1.99 1.99 1.99 ...
+##  $ DiscCH        : num  0 0 0.17 0 0 0 0 0 0 0 ...
+##  $ DiscMM        : num  0 0.3 0 0 0 0 0.4 0.4 0.4 0.4 ...
+##  $ SpecialCH     : num  0 0 0 0 0 0 1 1 0 0 ...
+##  $ SpecialMM     : num  0 1 0 0 0 1 1 0 0 0 ...
+##  $ LoyalCH       : num  0.5 0.6 0.68 0.4 0.957 ...
+##  $ SalePriceMM   : num  1.99 1.69 2.09 1.69 1.69 1.99 1.59 1.59 1.59 1.59 ...
+##  $ SalePriceCH   : num  1.75 1.75 1.69 1.69 1.69 1.69 1.69 1.75 1.75 1.75 ...
+##  $ PriceDiff     : num  0.24 -0.06 0.4 0 0 0.3 -0.1 -0.16 -0.16 -0.16 ...
+##  $ Store7        : Factor w/ 2 levels "No","Yes": 1 1 1 1 2 2 2 2 2 2 ...
+##  $ PctDiscMM     : num  0 0.151 0 0 0 ...
+##  $ PctDiscCH     : num  0 0 0.0914 0 0 ...
+##  $ ListPriceDiff : num  0.24 0.24 0.23 0 0 0.3 0.3 0.24 0.24 0.24 ...
+##  $ STORE         : num  1 1 1 1 0 0 0 0 0 0 ...
+```
+
+```r
 OJ$Purchase <- as.factor(OJ$Purchase)
 ```
 
@@ -38,7 +99,8 @@ We check for any missing values in the data set and convert the response variabl
 
 To evaluate the model, we split the data set into training and testing sets. This ensures that the model is trained on one subset of the data and then tested on unseen data for an unbiased evaluation.
 
-```{r}
+
+```r
 set.seed(123)
 train_index <- createDataPartition(OJ$Purchase, p = 0.7, list = FALSE)
 train_data <- OJ[train_index, ]
@@ -49,34 +111,43 @@ test_data <- OJ[-train_index, ]
 
 ### Distribution of Purchases
 
-```{r}
+
+```r
 ggplot(OJ, aes(x = Purchase)) +
   geom_bar(fill = "lightblue") +
   ggtitle("Distribution of Purchase (Citrus Hill vs. Minute Maid)") +
   xlab("Purchase") + ylab("Count")
 ```
 
+![](OJ_files/figure-latex/unnamed-chunk-3-1.pdf)<!-- --> 
+
 This bar plot shows the distribution of purchases between Citrus Hill and Minute Maid. It helps us understand the balance of the response variable, which is important when building classification models. The bar chart displays the distribution of purchases between Citrus Hill (CH) and Minute Maid (MM) orange juice. The taller bar for Citrus Hill indicates that it is purchased more frequently than Minute Maid in the dataset, with over 600 purchases for CH compared to around 400 for MM. This imbalance suggests that Citrus Hill is the more popular choice overall.
 
 ### Scatter Plot: Price of Citrus Hill vs. Minute Maid
 
-```{r}
+
+```r
 ggplot(OJ, aes(x = PriceCH, y = PriceMM, color = Purchase)) +
   geom_point(alpha = 0.6) +
   ggtitle("Price of Citrus Hill vs. Price of Minute Maid by Purchase") +
   xlab("Price of Citrus Hill") + ylab("Price of Minute Maid")
 ```
 
+![](OJ_files/figure-latex/unnamed-chunk-4-1.pdf)<!-- --> 
+
 In this scatter plot, we compare the prices of Citrus Hill and Minute Maid with respect to the purchases. Points are colored by Purchase, allowing us to see the relationship between the prices and the purchase decision. The scatter plot visualizes the relationship between the prices of Citrus Hill (x-axis) and Minute Maid (y-axis) for different purchase decisions. Points are color-coded by the product purchased (CH or MM). There is some overlap between the two products, but it is evident that lower prices for one product might influence the decision to purchase the other.
 
 ### Density Plots: Price of Citrus Hill vs. Price of Minute Maid by Purchase
 
-```{r}
+
+```r
 ggplot(OJ, aes(x = PriceCH, fill = Purchase)) +
   geom_density(alpha = 0.4) +
   ggtitle("Distribution of Price for Citrus Hill by Purchase") +
   xlab("Price of Citrus Hill")
 ```
+
+![](OJ_files/figure-latex/unnamed-chunk-5-1.pdf)<!-- --> 
 
 The density plot shows the distribution of prices for Citrus Hill (CH), separated by the product purchased (either Citrus Hill (CH) or Minute Maid (MM)), using different colors. The x-axis represents the price of Citrus Hill, while the y-axis indicates the density, or the relative frequency of different prices in the dataset.
 
@@ -86,22 +157,28 @@ The density plot shows the distribution of prices for Citrus Hill (CH), separate
 
 ### Density Plots: Price for minute maid by purchase
 
-```{r}
+
+```r
 ggplot(OJ, aes(x = PriceMM, fill = Purchase)) +
   geom_density(alpha = 0.4) +
   ggtitle("Distribution of Price for Minute Maid by Purchase") +
   xlab("Price of Minute Maid")
 ```
 
+![](OJ_files/figure-latex/unnamed-chunk-6-1.pdf)<!-- --> 
+
 This density plot shows the price distribution of Minute Maid purchases by two groups: CH (red) and MM (blue). Both groups frequently buy around the 2.0–2.2 price range, with CH purchases being more concentrated around specific price points (2.0 and 2.1). MM purchases have a wider spread, including some lower prices (around 1.7), indicating more variability in purchase prices compared to CH. The overlap suggests shared popular price points, but MM appears more price-flexible.
 
 ## Building the Initial Decision Tree Model
 
-```{r}
+
+```r
 tree_model <- rpart(Purchase ~ ., data = train_data, method = "class")
 
 rpart.plot(tree_model, type = 3, extra = 102, under = TRUE, fallen.leaves = TRUE)
 ```
+
+![](OJ_files/figure-latex/unnamed-chunk-7-1.pdf)<!-- --> 
 
 The Decision Tree is built using the rpart function. A Decision Tree works by splitting the data at each node based on the feature that best separates the classes (Citrus Hill and Minute Maid) using criteria like Gini Impurity. The resulting tree is plotted to visualize how the features (e.g., prices, demographics) are used to make predictions at each step. Interpretation of the Tree
 
@@ -115,12 +192,49 @@ For customers with `LoyalCH` below 0.45, the tree uses `LoyalCH` thresholds at 0
 
 ## Evaluating the Model
 
-```{r}
+
+```r
 test_pred <- predict(tree_model, newdata = test_data, type = "class")
 confusionMatrix(test_pred, test_data$Purchase)
+```
 
+```
+## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction  CH  MM
+##         CH 169  33
+##         MM  26  92
+##                                           
+##                Accuracy : 0.8156          
+##                  95% CI : (0.7687, 0.8566)
+##     No Information Rate : 0.6094          
+##     P-Value [Acc > NIR] : 1.373e-15       
+##                                           
+##                   Kappa : 0.6088          
+##                                           
+##  Mcnemar's Test P-Value : 0.4347          
+##                                           
+##             Sensitivity : 0.8667          
+##             Specificity : 0.7360          
+##          Pos Pred Value : 0.8366          
+##          Neg Pred Value : 0.7797          
+##              Prevalence : 0.6094          
+##          Detection Rate : 0.5281          
+##    Detection Prevalence : 0.6312          
+##       Balanced Accuracy : 0.8013          
+##                                           
+##        'Positive' Class : CH              
+## 
+```
+
+```r
 initial_accuracy <- sum(test_pred == test_data$Purchase) / nrow(test_data)
 print(paste("Initial Accuracy:", round(initial_accuracy * 100, 2), "%"))
+```
+
+```
+## [1] "Initial Accuracy: 81.56 %"
 ```
 
 Explanation:
@@ -215,7 +329,8 @@ In summary, the model shows good overall accuracy (**81.56%**) and a strong abil
 
 ## Feature Importance
 
-```{r}
+
+```r
 var_imp <- as.data.frame(varImp(tree_model, scale = FALSE))
 var_imp$Variable <- rownames(var_imp)
 ggplot(var_imp, aes(x = reorder(Variable, Overall), y = Overall)) +
@@ -225,11 +340,14 @@ ggplot(var_imp, aes(x = reorder(Variable, Overall), y = Overall)) +
   ggtitle("Feature Importance in Initial Decision Tree")
 ```
 
+![](OJ_files/figure-latex/unnamed-chunk-9-1.pdf)<!-- --> 
+
 This feature importance plot shows which variables contributed the most to the Decision Tree splits. Variables with higher importance values played a more significant role in determining whether a customer purchased Citrus Hill or Minute Maid. This bar chart displays the feature importance rankings from an initial decision tree model. "LoyalCH" has the highest importance, suggesting that customer loyalty has the strongest impact on the model's predictions. Other key features, such as "PriceDiff" and "ListPriceDiff," also have significant influence, while features like "STORE" and "SpecialMM" have minimal impact, indicating they contribute less to the model's predictive power.
 
 ## Improving the Model: Hyperparameter Tuning
 
-```{r}
+
+```r
 set.seed(123)
 tree_tuned <- train(Purchase ~ ., data = train_data, method = "rpart",
                     trControl = trainControl(method = "cv", number = 10),
@@ -238,11 +356,14 @@ tree_tuned <- train(Purchase ~ ., data = train_data, method = "rpart",
 plot(tree_tuned)
 ```
 
+![](OJ_files/figure-latex/unnamed-chunk-10-1.pdf)<!-- --> 
+
 We perform hyper parameter tuning using 10-fold cross-validation to find the optimal complexity parameter (cp), which controls the depth and size of the tree. Tuning prevents over fitting by balancing model complexity and performance. This plot shows the relationship between the complexity parameter and cross-validated accuracy for a model. As the complexity parameter increases from 0 to around 0.4, accuracy remains relatively stable, suggesting that adding complexity does not significantly improve model performance. However, after 0.4, accuracy sharply declines, indicating over fitting and that further complexity negatively impacts the model’s predictive power.
 
 ## Final Decision Tree and Evaluation
 
-```{r}
+
+```r
 final_tree_model <- rpart(Purchase ~ ., data = train_data, method = "class", 
                           control = rpart.control(cp = tree_tuned$bestTune$cp))
 
@@ -250,14 +371,53 @@ rpart.plot(final_tree_model, type = 3, extra = 102, under = TRUE, fallen.leaves 
            main = "Improved Decision Tree")
 ```
 
+![](OJ_files/figure-latex/unnamed-chunk-11-1.pdf)<!-- --> 
+
 This improved decision tree classifies customers into two categories, "CH" and "MM," based on several factors, with `LoyalCH` (a loyalty score) as the primary decision criterion. At the top level, if `LoyalCH` is 0.45 or higher, the tree follows the left branch; if it’s lower, it goes right. For customers with `LoyalCH` above 0.71, further splits occur based on `PriceDiff` (price difference), `StoreID`, and `WeekofPurchase` to classify them as either "CH" or "MM." If `LoyalCH` is between 0.45 and 0.71, additional checks on `PriceMM`, `PctDiscMM`, and `WeekofPurchase` refine the classification. On the right side of the tree, for those with `LoyalCH` below 0.45, decisions rely on lower `LoyalCH` thresholds and other conditions like `SalePriceMM` and `SpecialCH`, leading to final classifications. The tree's added decision points on factors such as `StoreID` and `WeekofPurchase` enhance its accuracy by capturing store-specific and timing-based patterns, making it more nuanced and effective in distinguishing between customer types.
 
-```{r}
+
+```r
 final_test_pred <- predict(final_tree_model, newdata = test_data, type = "class")
 confusionMatrix(final_test_pred, test_data$Purchase)
+```
 
+```
+## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction  CH  MM
+##         CH 165  31
+##         MM  30  94
+##                                          
+##                Accuracy : 0.8094         
+##                  95% CI : (0.762, 0.8509)
+##     No Information Rate : 0.6094         
+##     P-Value [Acc > NIR] : 1.07e-14       
+##                                          
+##                   Kappa : 0.599          
+##                                          
+##  Mcnemar's Test P-Value : 1              
+##                                          
+##             Sensitivity : 0.8462         
+##             Specificity : 0.7520         
+##          Pos Pred Value : 0.8418         
+##          Neg Pred Value : 0.7581         
+##              Prevalence : 0.6094         
+##          Detection Rate : 0.5156         
+##    Detection Prevalence : 0.6125         
+##       Balanced Accuracy : 0.7991         
+##                                          
+##        'Positive' Class : CH             
+## 
+```
+
+```r
 final_accuracy <- sum(final_test_pred == test_data$Purchase) / nrow(test_data)
 print(paste("Final Accuracy:", round(final_accuracy * 100, 2), "%"))
+```
+
+```
+## [1] "Final Accuracy: 80.94 %"
 ```
 
 We rebuild the Decision Tree using the optimal cp value found through tuning. The new tree is expected to generalize better and prevent overfitting. The final accuracy is 80.94%, which is slightly lower than the initial accuracy, but the model is now more robust and less likely to overfit.
