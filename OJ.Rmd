@@ -107,7 +107,8 @@ rpart.plot(tree_model, type = 3, extra = 102, under = TRUE, fallen.leaves = TRUE
 
 ```
 
-The Decision Tree is built using the rpart function. A Decision Tree works by splitting the data at each node based on the feature that best separates the classes (Citrus Hill and Minute Maid) using criteria like Gini Impurity. The resulting tree is plotted to visualize how the features (e.g., prices, demographics) are used to make predictions at each step. Interpretation of the Tree -   **Nodes**: Each internal node represents a decision rule based on a feature. 
+The Decision Tree is built using the rpart function. A Decision Tree works by splitting the data at each node based on the feature that best separates the classes (Citrus Hill and Minute Maid) using criteria like Gini Impurity. The resulting tree is plotted to visualize how the features (e.g., prices, demographics) are used to make predictions at each step. Interpretation of the Tree 
+-   **Nodes**: Each internal node represents a decision rule based on a feature. 
 -   **Branches**: Each branch represents the outcome of the decision (true or false). 
 -   **Leaves**: The terminal nodes (leaves) display the predicted class for the samples that reach them.
 
@@ -347,3 +348,42 @@ We rebuild the Decision Tree using the optimal cp value found through tuning. Th
 ### Summary
 In summary, this model shows an overall accuracy of **80.94%**, with a strong sensitivity of **84.62%**, indicating that it effectively identifies positive cases (CH). The model also performs well in terms of specificity (**75.20%**) and Kappa statistic (**0.599**), which suggests a moderate level of agreement beyond chance. The confidence interval and P-values indicate that the model's performance is statistically significant and that it performs better than random guessing. Overall, Model 2 demonstrates reliable predictive capability for the task at hand.
 This Model demonstrates reliable predictive capability for identifying the positive class (CH).
+
+# Comparative Analysis of Model Performance
+
+## Model 1 Metrics (Before Cross-validation)
+- **Accuracy**: 81.56%
+- **Sensitivity (True Positive Rate)**: 86.67%
+- **Specificity (True Negative Rate)**: 73.60%
+- **Positive Predictive Value (PPV)**: 83.66%
+- **Negative Predictive Value (NPV)**: 77.97%
+- **Kappa Statistic**: 0.6088
+- **Balanced Accuracy**: 80.13%
+- **95% Confidence Interval (CI)**: (0.7687, 0.8566)
+
+## Model 2 Metrics (After Cross-validation)
+- **Accuracy**: 80.94%
+- **Sensitivity (True Positive Rate)**: 84.62%
+- **Specificity (True Negative Rate)**: 75.20%
+- **Positive Predictive Value (PPV)**: 84.18%
+- **Negative Predictive Value (NPV)**: 75.81%
+- **Kappa Statistic**: 0.599
+- **Balanced Accuracy**: 79.91%
+- **95% Confidence Interval (CI)**: (0.762, 0.8509)
+
+## Key Comparisons
+1. **Accuracy**: Model 1 has a slightly higher accuracy (81.56%) compared to Model 2 (80.94%).
+2. **Sensitivity**: Model 1 also outperforms Model 2 in sensitivity (86.67% vs. 84.62%), indicating it is better at identifying actual positive cases (CH).
+3. **Specificity**: Model 2 has a higher specificity (75.20% vs. 73.60%), meaning it is slightly better at identifying actual negative cases (MM).
+4. **Positive Predictive Value (PPV)**: Model 2 performs better in terms of PPV (84.18% vs. 83.66%), suggesting it is more reliable when predicting CH instances.
+5. **Negative Predictive Value (NPV)**: Model 1 has a better NPV (77.97% vs. 75.81%), indicating it is more effective at predicting negative instances.
+6. **Kappa Statistic**: Model 1 shows a marginally better Kappa statistic (0.6088 vs. 0.599), indicating slightly stronger agreement beyond chance.
+7. **Balanced Accuracy**: Model 1 has a better balanced accuracy (80.13% vs. 79.91%), highlighting a more favorable performance considering both classes.
+8. **Confidence Intervals**: Both models show overlapping confidence intervals, but Model 1’s is slightly higher, reinforcing its reliability.
+
+## Conclusion
+Both models demonstrate effective performance in predicting the classification of instances as CH or MM. Model 1 exhibits superior overall accuracy, sensitivity, and negative predictive value, making it particularly strong in correctly identifying actual positive cases and minimizing false negatives. Conversely, Model 2 shows a higher specificity and positive predictive value, suggesting it is more reliable for confirming negative cases. 
+
+In terms of general applicability, **Model 1 is recommended for scenarios where accurately identifying positive cases is critical**, while **Model 2 may be preferable in contexts where correctly predicting negative instances is more important**. Ultimately, the choice between models should consider the specific requirements of the application, particularly the costs associated with false positives and false negatives.
+
+In this analysis, I learned that evaluating model performance metrics such as accuracy, sensitivity, and specificity is crucial for understanding how well a model predicts outcomes. The comparison of two models highlighted the importance of selecting the right model based on the specific needs of the application, particularly in terms of false positive and false negative rates. Ultimately, these insights will guide my future work in model selection and performance evaluation.
